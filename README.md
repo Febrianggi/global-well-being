@@ -1,6 +1,8 @@
 [Baca dalam Bahasa Indonesia](README.id.md)
 # Global Well-Being Analysis with PCA and K-Means Clustering
 
+**Slides online:** https://febrianggi.github.io/global-well-being/ (the presentation in the browser, with the PDF and the paper linked)
+
 A multivariate analysis in R that groups countries by well-being indicators from the World Happiness Report. The data are cross-sectional (2025) and cover 147 countries. Two countries with missing values are dropped, which leaves 145 countries.
 
 ## What is in this project

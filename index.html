@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analisis Well-Being Global · Slides</title>
+<meta name="description" content="Slide presentasi: analisis well-being global 145 negara dengan PCA dan K-Means clustering, data World Happiness Report 2025.">
+<meta name="theme-color" content="#151815">
+<link rel="preload" as="image" href="slides/01.webp">
+<style>
+:root{--bg:#151815;--panel:#1d211d;--line:#2d332d;--ink:#ecebe6;--mut:#a9ada4;--acc:#c72a09;--acc2:#e8573a;--cream:#e4e2dd;--green:#2f6b44;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+.top{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;max-width:1360px;width:100%;margin:0 auto;padding:20px clamp(16px,3vw,32px) 12px}
+.ttl{flex:1 1 360px;min-width:0}
+.ttl small{display:block;color:var(--mut);font-size:13px;font-weight:600}
+.ttl h1{margin:2px 0 0;font-size:clamp(18px,2.2vw,22px);line-height:1.3;font-weight:700;letter-spacing:-.01em}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.lk{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap}
+.lk:hover{border-color:#4a524a}
+.lk.pri{background:var(--cream);color:#151815;border-color:var(--cream)}
+.lk svg{width:16px;height:16px;flex:none}
+main{flex:1;width:100%;max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,32px) 40px}
+.deck{width:min(100%,calc((100svh - 200px)*16/9));min-width:min(100%,560px);margin:0 auto}
+.stage{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 20px 50px -24px rgba(0,0,0,.8);touch-action:pan-y}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .18s}
+.stage img.ld{opacity:.35}
+.nav{position:absolute;top:0;bottom:0;width:22%;border:0;background:none;cursor:pointer;display:flex;align-items:center;padding:0 16px;opacity:0;transition:opacity .2s}
+.nav.prev{left:0;justify-content:flex-start}.nav.next{right:0;justify-content:flex-end}
+.nav span{width:48px;height:48px;border-radius:50%;background:rgba(10,12,10,.62);display:grid;place-items:center;font-size:22px;line-height:1;color:#fff}
+.stage:hover .nav,.nav:focus-visible{opacity:1}.nav:disabled{visibility:hidden}
+.msg{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--mut);background:#0d0f0d}
+.msg.on{display:grid}
+.bar{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;margin-top:14px}
+.cnt{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;min-width:64px}
+.cur{flex:1 1 240px;min-width:0;color:var(--mut);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctl{display:flex;gap:8px}
+.ib{height:40px;min-width:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.ib:hover{border-color:#4a524a}.ib[aria-pressed=true]{background:var(--cream);color:#151815;border-color:var(--cream)}.ib:disabled{opacity:.4;cursor:default}
+.prog{height:3px;background:var(--line);border-radius:2px;margin-top:12px;overflow:hidden}.prog i{display:block;height:100%;background:var(--acc2);transition:width .2s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:24px}
+.grid[hidden]{display:none}
+.th{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:0;overflow:hidden;cursor:pointer;text-align:left}
+.th img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#0d0f0d}
+.th span{display:flex;gap:8px;padding:9px 11px;font-size:13px;line-height:1.35;color:var(--mut)}.th b{color:var(--ink);font-variant-numeric:tabular-nums}
+.th:hover{border-color:#4a524a}.th.on{border-color:var(--acc2);box-shadow:0 0 0 1px var(--acc2)}
+details{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}
+summary{cursor:pointer;font-weight:700}
+.txt{margin:12px 0 0;color:var(--mut);max-width:90ch;white-space:pre-wrap}
+.keys{color:var(--mut);font-size:13px;margin-top:10px}
+kbd{font:600 12px ui-monospace,Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--panel)}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:8px 16px 28px}
+.stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
+.stage:fullscreen .nav{opacity:0}.stage:fullscreen:hover .nav{opacity:.9}
+@media(max-width:640px){.top{padding-top:14px}.lk{height:40px;padding:0 12px;font-size:13px}.stage{border-radius:10px;margin:0 -4px}.nav{display:none}.cur{order:3;flex-basis:100%;white-space:normal}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.keys{display:none}.ib .lbl{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="ttl"><small>Presentasi · World Happiness Report 2025 · PCA dan K-Means</small><h1>Analisis Well-Being Global dengan Reduksi Dimensi dan Clustering</h1></div>
+  <nav class="links" aria-label="Files">
+    <a class="lk pri" href="Slide.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>Slides (PDF)</a>
+    <a class="lk" href="Paper.pdf">Paper (PDF)</a>
+    <a class="lk" href="https://github.com/Febrianggi/global-well-being">GitHub repository</a>
+  </nav>
+</header>
+<main>
+  <div class="deck">
+  <div class="stage" id="stage" role="region" aria-roledescription="carousel" aria-label="Slides">
+    <img id="img" src="slides/01.webp" alt="" width="1920" height="1080" decoding="async">
+    <button class="nav prev" id="prev" type="button" aria-label="Previous slide"><span aria-hidden="true">‹</span></button>
+    <button class="nav next" id="next" type="button" aria-label="Next slide"><span aria-hidden="true">›</span></button>
+    <div class="msg" id="msg" role="alert">This slide image could not load. Check your connection, or open the <a href="Slide.pdf">PDF</a> instead.</div>
+  </div>
+  <div class="prog" aria-hidden="true"><i id="prog"></i></div>
+  <div class="bar">
+    <span class="cnt" id="cnt" aria-live="polite">1 / 24</span>
+    <span class="cur" id="cur"></span>
+    <div class="ctl">
+      <button class="ib" id="bPrev" type="button" aria-label="Previous slide">‹</button>
+      <button class="ib" id="bNext" type="button" aria-label="Next slide">›</button>
+      <button class="ib" id="bGrid" type="button" aria-pressed="false" aria-controls="grid"><span aria-hidden="true">▦</span><span class="lbl">All slides</span></button>
+      <button class="ib" id="bFs" type="button"><span aria-hidden="true">⛶</span><span class="lbl">Full screen</span></button>
+    </div>
+  </div>
+  <p class="keys">Keyboard: <kbd>←</kbd> <kbd>→</kbd> to move, <kbd>F</kbd> full screen, <kbd>G</kbd> all slides. On a phone, swipe the slide.</p>
+  </div>
+  <div class="grid" id="grid" hidden></div>
+  <details><summary>Text on this slide</summary><p class="txt" id="txt"></p></details>
+</main>
+<footer>Intan Maharani · Rahiyang Raja N. · Gregorius Adiyatma · Febrianggi Caesar Immanuel · 2026</footer>
+<script>
+(function(){
+'use strict';
+const S=[{"t": "Analisis Well-Being Global dengan Reduksi Dimensi dan Clustering", "x": "Analisis Well-BeingGlobal dengan ReduksiDimensi dan Clustering 202620262026 INTAN MAHARANI (0038) RAHIYANG RAJA N. (0048) GREGORIUS ADIYATMA (0065) FEBRIANGGI CAESAR I. (0077)"}, {"t": "01. Latar Belakang", "x": "01. Latar belakang Kesejahteraan masyarakat menjadi fokus utama pembangunan global dan dipengaruhi oleh berbagai faktor seperti pendapatan, dukungan sosial, kesehatan, kebebasan, kemurahan hati, dan persepsi korupsi. Variasi tingkat kesejahteraan antarnegara menunjukkan bahwa hubungan antarvariabel bersifat kompleks dan multidimensional. Oleh karena itu, diperlukan pendekatan analisis multivariat dengan teknik reduksi dimensi dan clustering untuk mengidentifikasi pola tersembunyi serta mengelompokkan negara berdasarkan profil well-being secara komprehensif Latar belakang Masalah Rumusan Masalah Tujuan Penelitian Bagaimana PCA mereduksi enam variabel well-being menjadi beberapa komponen utama tanpa kehilangan informasi penting? Bagaimana negara dapat dikelompokkan berdasarkan profil kesejahteraan menggunakan hasil PCA? Bagaimana karakteristik setiap klaster negara dan implikasinya terhadap kebijakan kesejahteraan masyarakat? Preprocessing & standardisasi data untuk memastikan kualitas data optimal. Mengaplikasikan PCA untuk mereduksi dimensi dan mengidentifikasi komponen utama well-being. Menerapkan K-Means Clustering untuk mengelompokkan negara berdasarkan karakteristik kesejahteraan. Menginterpretasikan profil setiap klaster berdasarkan karakteristik well-being. Memberikan rekomendasi kebijakan untuk meningkatkan kesejahteraan masyarakat. Penelitian ini menggunakan data sekunder dari World Happiness Report dengan fokus pada enam variabel utama. Analisis dibatasi pada penerapan metode PCA dan K-Means Clustering tanpa membandingkan metode clustering lainnya. Penentuan jumlah klaster dilakukan menggunakan Elbow Method dan Silhouette Coefficient. Penelitian juga hanya menganalisis data lintas negara pada periode tertentu (snapshot) sehingga tidak mencakup analisis perubahan temporal maupun variabilitas intra-negara dan perbedaan antardemografi. Batasan Masalah"}, {"t": "02. Data dan Metodologi", "x": "Penelitian ini menggunakan data sekunder dari World Happiness Report 2025 yang diterbitkan oleh Sustainable Development Solutions Network (SDSN) di bawah naungan PBB. Data berupa cross-sectional dari 147 negara dipilih karena memiliki cakupan global yang luas, metode pengumpulan terstandarisasi, dan validasi dari lembaga internasional yang kredibel. Penelitian ini menggunakan pendekatan analisis multivariat dengan kombinasi Principal Component Analysis (PCA) dan K- Means Clustering. 02. data dan metodologi Year Rank Country Name Log GDP / Capita Social Support Healthy Life Expectancy Freedom to Make Life Choices Generosity Perseptions of Corruption 2025 1 Finland 1,915 1,638 0,939 1,105 0,093 0,491 2025 2 Iceland 1,971 1,720 0,996 1,105 0,187 ... ... ... 2025 147 Afghanistan 0,921 0 0,176 0 0,076 0,131"}, {"t": "03. Variabel Penelitian", "x": "VARIABEL PENJELASAN Log GDP per Capita (X1) Menggambarkan tingkat pendapatan dan kesejahteraan ekonomi suatu negara. Social Support (X2) Menunjukkan tingkat dukungan sosial dan keberadaan kerabat/teman yang dapat diandalkan. Healthy Life Expectancy (X3) Menggambarkan harapan hidup sehat masyarakat dan kualitas kesehatan negara. Freedom to Make Life Choices (X4) Menunjukkan tingkat kebebasan individu dalam menentukan pilihan hidup. Generosity (X5) Menggambarkan perilaku altruistik atau kecenderungan masyarakat untuk berbagi dan berdonasi. Perceptions of Corruption (X6) Menunjukkan persepsi masyarakat terhadap tingkat korupsi pada pemerintahan dan institusi. 03. variabel penelitian Menunjukkan persepsi masyarakat terhadap tingkat korupsi pada pemerintahan dan institusi."}, {"t": "04. Tinjauan Pustaka dan Alur Penelitian", "x": "04. tinjauan pustaka dan alur penelitian"}, {"t": "Tinjauan Pustaka: PCA dan Analisis Klaster", "x": "PENGUMPULAN DATA PRE-PROCESSING (ELIMINASI MISSING VALUE · STANDARISASI Z-SCORE) PCA (EIGENVALUE · LOADING · COMPONENT SCORE) K-OPTIMAL (ELBOW + SILHOUETTE) K- MEANS CLUSTERING PROFILING & INTERPRETASI CLUSTER 04.tinjauan pustaka & metode penelitian KONSEP UTAMA: 1.Uji KMO 2.Principal Component Analysis (PCA) 3.Analisis Klaster 4.K-Means Clustering 5.Elbow Method & Silhouette Coefficient K-MEANS CLUSTERING (meminimalkan Within- Cluster Sum of Squares) : K-OPTIMAL ditentukan dengan: Elbow Method dan Silhouette Coefficient PRINCIPAL COMPONENT ANALYSIS (Reduksi dimensi variabel berkorelasi) eigenvalue > 1 → komponen dipertahankan Output: Loading Matrix & Component Score"}, {"t": "05. Alur Penelitian", "x": "PCA (EIGENVALUE · LOADING · COMPONENT SCORE) K-OPTIMAL (ELBOW + SILHOUETTE) K- MEANS CLUSTERING PROFILING & INTERPRETASI CLUSTER PRE-PROCESSING (ELIMINASI MISSING VALUE · STANDARISASI Z-SCORE) PENGUMPULAN DATA 05. ALUR PENELITIAN"}, {"t": "06. Pengujian Asumsi: KMO", "x": "Variabel KMO Log GDP 0.69 Social Support 0.72 Healthy Life Expectation 0.76 Freedom 0.82 Generiosity 0.36 Corrruption 0.73 Variabel KMO Log GDP 0.72 Social Support 0.72 Healthy Life Expectation 0.76 Freedom 0.82 Corrruption 0.73 Nilai KMO Interpretasi KMO > 0.5 Layak KMO > 0.7 Baik KMO > 0.8 Sangat Baik 06. pengujian asumsi Data Mentah Iterasi 1 KMO > 0,5 → Layak Artinya data sudah memenuhi syarat minimum untuk dilakukan analisis faktor. Korelasi antar variabel cukup memadai, meskipun belum terlalu kuat. KMO > 0,7 → Baik Menunjukkan bahwa hubungan antar variabel cukup kuat sehingga hasil analisis faktor akan lebih stabil dan dapat dipercaya. KMO > 0,8 → Sangat Baik Artinya data memiliki tingkat kecocokan yang sangat tinggi untuk analisis faktor. Korelasi antar variabel sangat baik sehingga faktor yang terbentuk cenderung lebih jelas dan akurat."}, {"t": "06. Pengujian Asumsi: Uji Bartlett", "x": "Chi-square P-value 271.634 1.513124e- 52 Tolak H0 apabila P-Value < alpha Dengan taraf signifikansi 5% terdapat bukti yang cukup untuk menyatakan bahwa Variabel-variabel pada data saling berkorelasi sehingga analisis PCA untuk data ini dapat dilakukan. Korelasi Antar Variabel 06. pengujian asumsi"}, {"t": "Cumulative Proportion, Eigenvalue, Loading", "x": "Component cumulative- iComp 1 56.82% Comp 2 73.75% Comp 3 88.17% Comp 4 95.16% Comp 5 100% Component Eigenvalue Comp 1 2.821 Comp 2 0.841 Comp 3 0.716 Comp 4 0.347 Comp 5 0.24 Variabel PC1 PC2 PC3 PC4 PC5 Log_GDP 0.5157 -0.1332 -0.3421 0.0099 -0.774 Social_su pport 0.4722 -0.4713 -0.1477 0.5603 0.4682 Healthy_l ife_exp 0.4959 0.2155 -0.301 -0.6652 0.4179 Freedom 0.3735 -0.2669 0.8498 -0.2452 -0.0839 Corrupti on 0.3544 0.8016 0.2202 0.4282 0.0064 CUMULATIVE-PROPoRTION Berdasarkan tabel didapatkan bahwa tiga komponen utama sudah mampu menjelaskan hingga 88.17% variasi total data. sehingga untuk analisis selanjutnya akan mempertahakan tiga komponen utama karena masih mampu menjelaskan informasi utama dalam data. EIGEN VALUE Nilai eigenvalue menunjukkan kontribusi masing-masing komponen dalam menjelaskan variasi data. Komponen 1 memiliki eigenvalue terbesar (2,821) sehingga menjadi komponen paling dominan dalam menjelaskan variasi data. Komponen 2 (0,841) dan komponen 3 (0,716) masih memberikan tambahan informasi. Komponen 4 (0,347) dan komponen 5 (0,240) memiliki kontribusi yang relatif kecil terhadap variasi data. loading matriks PC1 merepresentasikan dimensi umum kesejahteraan karena seluruh variabel memiliki loading positif yang cukup besar. PC2 paling dipengaruhi oleh Corruption, PC3 oleh Freedom, PC4 oleh Social Support dan Healthy Life Expectation, serta PC5 oleh Log GDP. Hasil ini menunjukkan bahwa PCA mampu mereduksi dimensi data tanpa banyak kehilangan informasi utama."}, {"t": "Scree Plot", "x": "scree plot"}, {"t": "Biplot", "x": "biplot Biplot PCA di bawah menunjukkan posisi negara dan kontribusi variabel dalam ruang PC1 dan PC2. Negara di sisi kanan memiliki profil kesejahteraan lebih tinggi, terutama pada Log_GDP, Social_support, dan Healthy_life_exp, sedangkan negara di sisi kiri menunjukkan kesejahteraan lebih rendah. Sebaran titik yang luas menandakan adanya perbedaan kondisi kesejahteraan antarnegara."}, {"t": "Correlation Circle: PC1 vs PC2", "x": "Berdasarkan Biplot Variabel PCA di bawah, PC1 menjelaskan 56,8% variasi data dan PC2 sebesar 16,9%. Seluruh variabel berkontribusi positif terhadap PC1 sebagai dimensi umum kesejahteraan. Log_GDP, Social_support, dan Healthy_life_exp tampak berkorelasi kuat, sedangkan Corruption paling dominan membentuk PC2 dan memiliki karakteristik lebih independen. Correlation circle"}, {"t": "Correlation Circle: PC1 vs PC3", "x": "Correlation Circle Pada correlation circle PC1 vs PC3, variabel Freedom memiliki kontribusi paling besar terhadap PC3 sehingga komponen tersebut merepresentasikan aspek kebebasan dalam pengambilan keputusan hidup. Sementara itu, Log_GDP, Healthy_life_exp, dan Social_support lebih dominan terhadap PC1 yang merepresentasikan dimensi kesejahteraan sosial-ekonomi."}, {"t": "Correlation Circle: PC2 vs PC3", "x": "Correlation Circle Pada correlation circle PC2 vs PC3, variabel Corruption paling dominan terhadap PC2, sedangkan Freedom paling dominan terhadap PC3, sehingga kedua komponen merepresentasikan karakteristik yang berbeda dalam data. Sementara itu, Log_GDP, Healthy_life_exp, dan Social_support memiliki kontribusi yang lebih kecil pada bidang ini, serta arah vektor yang berlawanan menunjukkan adanya kecenderungan hubungan negatif antar beberapa variabel."}, {"t": "Model Akhir PCA", "x": "Variabel PC1 PC2 PC3 X1 0.5157 -0.1332 -0.3421 X2 0.4722 -0.4713 -0.1477 X3 0.4959 0.2155 -0.301 X4 0.3735 -0.2669 0.8498 X5 0.3544 0.8016 0.2202 model akhir pca"}, {"t": "Analisis Klaster: Penentuan K Optimal", "x": "analisis kluster : PENENTUAN K OPTIMAL Berdasarkan metode elbow, nilai wwcs mengalami penurunan signifikan hingga k = 4. jumlah klaster optimal pada metode elbow ini adalah sebanyak 4 buah klaster berdasarkan silhoutte plot, nilai koefisien silhoutte tertinggi berada pada saat k = 2. hal ini berarti pembentukan 2 buah klaster memberikan tingkat pemisahan yang terbaik Metode below Silhouette Plot"}, {"t": "Dendogram", "x": "Dendogram Dari dendogram di atas dapat dijadikan sebagai panduan dalam menentukan negara mana yang mempunyai kesamaan karakteristik. Posisi dari dua negara yang semakin dekat menunjukkan bahwa negara-negara tersebut memiliki kemiripan, sedangkan apabila posisi dari dua titik semakin jauh maka semakin berbeda pula karakteristiknya."}, {"t": "Visualisasi Klaster", "x": "visualisasi kluster berdasarkan HYBRID PLOT CLUSTERING PCA di samping, ditunjukkan pemisahan dua klaster berdasarkan dua komponen utama. Sebaran yang terpisah menunjukkan bahwa kedua klaster memiliki karakteristik well-being yang berbeda."}, {"t": "Profil Karakteristik Klaster", "x": "Melalui profil karakteristik masing-masing klaster didapatkan bahwa klaster 2 memiliki rata-rata yang lebih tinggi pada seluruh variabel. Hal ini menjelaskan bahwa negara-negara pada klaster 2 memiliki well-being masyarakat yang lebih baik dalam tingkat kesejahteraan, kualitas hidup, dan kondisi sosial dibandingkan dengan negara-negara pada klaster 1. Profil karakteristik kluster Klaster Jumlah Negara Log GDP per Capita Social Support Healthy Life Expectancy Freedom to Make Life Choices Perceptions of Corruption 1 67 1.246 0.941 0.41 0.786 0.101 2 78 1.791 1.426 0.791 0.967 0.187"}, {"t": "Daftar Negara dalam Klaster", "x": ""}, {"t": "07. Kesimpulan dan Saran", "x": "07. kesimpulan & saran KESIMPULAN ━━━━━━━━━━━ Hasil PCA menunjukkan adanya hubungan positif antarvariabel kesejahteraan, terutama Log GDP, Social Support, dan Healthy Life Expectancy. Tiga komponen utama mampu menjelaskan 88,172% keragaman data, sehingga reduksi dimensi dinilai efektif. Komponen utama pertama merepresentasikan dimensi kesejahteraan umum dan didominasi oleh Log GDP, Social Support, serta Healthy Life Expectancy. Hasil K-Means Clustering menunjukkan jumlah cluster optimal dipilih sebanyak 2 cluster berdasarkan silhouette method. Cluster 1 didominasi negara berkembang dengan tingkat kesejahteraan lebih rendah, sedangkan cluster 2 didominasi negara maju dengan indikator kesejahteraan lebih tinggi. Nilai silhouette yang mayoritas positif menunjukkan hasil clustering cukup baik dan representatif. SARAN ━━━━━━ PCA dapat digunakan sebagai metode yang efektif untuk mereduksi dimensi data multivariat yang saling berkorelasi. Untuk penelitian selanjutnya, disarankan menambahkan lebih banyak variabel serta membandingkan metode clustering lain agar hasil segmentasi dan interpretasi kesejahteraan negara menjadi lebih komprehensif."}, {"t": "08. Daftar Pustaka", "x": "08. DAFTAR PUSTAKA Alisjahbana, A. S., & Murniningtyas, E. (2018). TUJUAN PEMBANGUNAN BERKELANJUTAN DI INDONESIA: KONSEP TARGET DAN STRATEGI IMPLEMENTASI. Sumedang: Unpad Press. Diener , E., Oishi, S., & Tay, L. (2018). Advances in subjective well-being research. nature human behaviour, 253-260. Everitt, B., Landau, S., Leese, M., & Stahl, D. (2011). Cluster Analysis 5th Edition. John Wiley & Sons, Ltd. Hair, J. F., Black, W., Babin, B., & Anderson, R. (2019). MULTIVARIATE DATA ANALYSIS 8th. ed. Cengange Learning. Helliwel, J., Layard, R., Sachs, J., Neve, J.-E., Aknin, L., & Wang, S. (2026). World Happiness Report. Oxford: University of Oxford: Wellbeing Research Centre. Helmiyatun, Ahmad, & Taqiudin, M. (2025). An Exploratory Factor Analysis of Classroom Management and Student Learning Motivation in Senior High Schools. Journal of Practice Learning and Educational Development, 5(2), 532-541. Jollife, I., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philos Trans A Math Phys Eng Sci . Kaiser, H. F. (1960). The Application of Electronic Computers to Factor Analysis. Educational and Psychological Measurement, 141-151. Kurniawati, N. A., & Rahayu, S. P. (2023). Analisis Kadar CO, Titania, dan Suhu Terhadap Kelembapan Udara Menggunakan Preprocessing Data, Distribusi Normal Multivariat, Uji Bartlett, dan T2 Hotelling. Institut Teknologi Sepuluh Nopember (ITS). Lelury, Z. A., & Wokanubun, A. E. (2015). ANALISIS BIPLOT PADA PEMETAAN KARAKTERISTIK KEMISKINAN DI PROVINSI MALUKU. Barekeng: Jurnal Ilmu Matematika dan Terapan, 9(1), 21-31. Manullang, S., Simangunsong, B. A., Syahputra, W. I., & Sihombing, A. L. (2023). Penerapan Principal Component Analysis (PCA) dalam Menentukan Faktor Kepuasan Mahasiswa FMIPA Universitas Negeri Medan pada Pembelajaran Daring Menggunakan SIPDA E-Learning UNIMED. INNOVATIVE: Journal Of Social Science Research, 3(2), 14123-14138. Perdana, S. A., Florentin, S. F., & Santoso, A. (2022). ANALISIS SEGMENTASI PELANGGAN MENGGUNAKAN K-MEANS CLUSTERINGSTUDI KASUS APLIKASI ALFAGIFT. Sebatik, 446-457."}, {"t": "Terima Kasih", "x": "terima kasih 202620262026"}],N=S.length,$=s=>document.querySelector(s),img=$('#img');
+const src=i=>'slides/'+String(i+1).padStart(2,'0')+'.webp';
+let cur=-1;const cache={};
+function pre(i){if(i<0||i>=N||cache[i])return;const im=new Image();im.src=src(i);cache[i]=im}
+function go(i,push){
+  i=Math.max(0,Math.min(N-1,i));if(i===cur)return;cur=i;
+  $('#msg').classList.remove('on');img.classList.add('ld');img.alt='Slide '+(i+1)+': '+S[i].t;img.src=src(i);
+  $('#cnt').textContent=(i+1)+' / '+N;$('#cur').textContent=S[i].t;$('#prog').style.width=((i+1)/N*100)+'%';
+  $('#txt').textContent=S[i].x||'This slide has no extractable text. See the image above.';
+  ['#prev','#bPrev'].forEach(s=>$(s).disabled=i===0);['#next','#bNext'].forEach(s=>$(s).disabled=i===N-1);
+  document.querySelectorAll('.th').forEach((t,k)=>{t.classList.toggle('on',k===i);t.setAttribute('aria-current',k===i?'true':'false')});
+  document.title='Slide '+(i+1)+' · '+S[i].t;
+  const h='#'+(i+1);if(location.hash!==h)history[push?'pushState':'replaceState'](null,'',h);
+  pre(i+1);pre(i-1);pre(i+2)}
+img.onload=()=>img.classList.remove('ld');
+img.onerror=()=>{img.classList.remove('ld');$('#msg').classList.add('on')};
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+$('#next').onclick=$('#bNext').onclick=next;$('#prev').onclick=$('#bPrev').onclick=prev;
+const grid=$('#grid');
+grid.innerHTML=S.map((s,i)=>'<button class="th" type="button" data-i="'+i+'"><img loading="lazy" src="slides/thumbs/'+String(i+1).padStart(2,'0')+'.webp" alt="" width="480" height="270"><span><b>'+(i+1)+'</b>'+s.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span></button>').join('');
+grid.addEventListener('click',e=>{const b=e.target.closest('.th');if(!b)return;go(+b.dataset.i,true);toggleGrid(false);$('#stage').scrollIntoView({block:'nearest'})});
+function toggleGrid(on){on=on===undefined?grid.hidden:on;grid.hidden=!on;$('#bGrid').setAttribute('aria-pressed',on);if(on){const t=grid.children[cur];t&&t.scrollIntoView({block:'nearest'})}}
+$('#bGrid').onclick=()=>toggleGrid();
+const stage=$('#stage');
+function fs(){if(document.fullscreenElement)document.exitFullscreen();else if(stage.requestFullscreen)stage.requestFullscreen().catch(()=>{})}
+$('#bFs').onclick=fs;if(!stage.requestFullscreen)$('#bFs').hidden=true;
+document.addEventListener('keydown',e=>{
+  if(e.altKey||e.ctrlKey||e.metaKey)return;const tg=e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;
+  const k=e.key;
+  if(k==='ArrowRight'||k==='PageDown'||(k===' '&&tg!=='BUTTON'&&tg!=='SUMMARY')){e.preventDefault();next()}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev()}
+  else if(k==='Home'){e.preventDefault();go(0)}else if(k==='End'){e.preventDefault();go(N-1)}
+  else if(k==='f'||k==='F')fs();else if(k==='g'||k==='G')toggleGrid();
+  else if(k==='Escape'&&!grid.hidden)toggleGrid(false)});
+let x0=null,y0=null;
+stage.addEventListener('touchstart',e=>{const t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});
+stage.addEventListener('touchend',e=>{if(x0===null)return;const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)(dx<0?next:prev)()},{passive:true});
+stage.addEventListener('click',e=>{if(e.target===img&&matchMedia('(max-width:640px)').matches){const r=stage.getBoundingClientRect();(e.clientX-r.left<r.width/3?prev:next)()}});
+const fromHash=()=>{const n=parseInt(location.hash.slice(1),10);return n>=1&&n<=N?n-1:0};
+window.addEventListener('popstate',()=>go(fromHash()));window.addEventListener('hashchange',()=>go(fromHash()));
+go(fromHash());
+})();
+</script>
+</body>
+</html>

@@ -1,48 +1,60 @@
-[Baca dalam Bahasa Indonesia](README.id.md)
 # Global Well-Being Analysis with PCA and K-Means Clustering
 
-**Slides online:** https://febrianggi.github.io/global-well-being/ (the presentation in the browser, with the PDF and the paper linked)
+**English** · [Bahasa Indonesia](README.id.md)
 
-A multivariate analysis in R that groups countries by well-being indicators from the World Happiness Report. The data are cross-sectional (2025) and cover 147 countries. Two countries with missing values are dropped, which leaves 145 countries.
+A multivariate analysis in R that reduces and clusters 145 countries on well-being indicators from the 2025 World Happiness Report (147 initial countries, 2 dropped for missing values). The repository includes an interactive browser slide deck, the full report PDF, and the reproducible R script.
 
-## What is in this project
+- **Online slides:** https://febrianggi.github.io/global-well-being/
+- **Downloads:** [`Slide.pdf`](Slide.pdf) · [`Paper.pdf`](Paper.pdf)
 
-The script `PCA & CLUSTER.R` runs the whole workflow, from data cleaning to cluster profiles:
+## Key findings
 
-1. Data preparation: remove rows with missing values and standardize with z-scores.
-2. Assumption checks: KMO, Bartlett's test of sphericity, boxplots, and Mahalanobis distance for outliers.
-3. PCA: eigenvalue table, scree plot, loading plot, biplot, and the final equation for each component.
-4. K-Means on the PCA scores: choosing k with the Elbow and Silhouette methods.
-5. Cluster profiles: average of the original variables per cluster and the list of countries in each cluster.
+- **Variable screening:** Out of six initial indicators, `Generosity` was removed because its KMO value was **0.36** (below the 0.5 threshold). On the remaining five indicators, Bartlett's test of sphericity is strongly significant (chi-square **271.634**, `p` ≈ `1.5 × 10^-52`), confirming adequate correlation for PCA.
+- **Three principal components explain 88.172% of total variance** (PC1 eigenvalue **2.821**):
+  - **PC1:** General well-being (`Log GDP per capita`, `Social support`, `Healthy life expectancy`).
+  - **PC2:** Dominated by `Perceptions of corruption`.
+  - **PC3:** Dominated by `Freedom to make life choices`.
+- **Two global well-being clusters (`k = 2`):** The Elbow method suggests `k = 4`, while the Silhouette method favours `k = 2` (average width **0.386**). Using `k = 2`:
+  - **Cluster 1 (67 countries):** Lower average scores across the five well-being indicators.
+  - **Cluster 2 (78 countries):** Higher average scores across the five well-being indicators.
 
-## Language
+## How to read the online slides and paper
 
-The paper and the presentation slides for this project are written in Indonesian. Comments and console output in the R script are also in Indonesian. Variable names and technical terms (well-being, clustering, eigenvalue) are kept in English.
+Open https://febrianggi.github.io/global-well-being/ (served from [`index.html`](index.html)) to step through all **25 slides** (`slides/01.webp` to `slides/25.webp`) directly in the browser:
 
-## Variables
+- Use the on-screen arrows (`‹` / `›`) or keyboard arrow keys to move slide by slide.
+- Click **All slides** to open the thumbnail grid and jump directly to a specific chart (KMO/Bartlett checks, scree plot, biplot, Elbow/Silhouette selection, or cluster map/profiles).
+- Click **Full screen** for presentation view, or use the header links to download [`Slide.pdf`](Slide.pdf) and [`Paper.pdf`](Paper.pdf).
 
-The analysis starts with six variables from the World Happiness Report:
+**Language note:** The slide deck, full paper, and R script comments/console output are written in Indonesian, while variable names and statistical terms (`well-being`, `clustering`, `eigenvalue`) stay in English.
 
-- Log GDP per capita
-- Social support
-- Healthy life expectancy
-- Freedom to make life choices
-- Generosity
-- Perceptions of corruption
+## Variables and workflow
 
-Generosity is removed because its KMO value is only 0.36, below the 0.5 threshold. The main analysis runs on the remaining five variables.
+The analysis starts with six variables from the World Happiness Report (`Log GDP per capita`, `Social support`, `Healthy life expectancy`, `Freedom to make life choices`, `Generosity`, and `Perceptions of corruption`) and runs on the five retained variables after dropping `Generosity`.
 
-## Summary of results
+[`PCA & CLUSTER.R`](PCA%20&%20CLUSTER.R) executes five steps end to end:
 
-- Bartlett's test is significant (chi-square 271.634, p about 1.5 × 10⁻⁵²), so the variables are correlated enough for PCA.
-- Three principal components explain 88.172% of the total variance. The first eigenvalue is 2.821.
-- PC1 is a general well-being dimension (Log GDP, Social support, Healthy life expectancy). PC2 is dominated by Perceptions of corruption, and PC3 by Freedom to make life choices.
-- The Elbow method suggests k = 4, while the Silhouette method suggests k = 2 with an average width of 0.386. The final result uses k = 2.
-- Cluster 1 (67 countries) has lower average indicators. Cluster 2 (78 countries) has higher average indicators.
+1. **Data preparation:** Drop rows with missing values (147 to 145 countries) and standardize with z-scores.
+2. **Assumption checks:** KMO, Bartlett's test of sphericity, boxplots, and Mahalanobis distance for outliers.
+3. **PCA:** Eigenvalue table, scree plot, loading plot, biplot, and component equations.
+4. **K-Means on PCA scores:** Compare `k` with Elbow and Silhouette (`set.seed(42)`).
+5. **Cluster profiles:** Compute original-scale variable means per cluster and list member countries.
 
-## How to run
+## How to run locally
 
-You need R and the following packages:
+### 1. View the web slides locally
+
+Serve the repository root over HTTP so the browser loads the 25 WebP slides cleanly:
+
+```bash
+python -m http.server 8000
+```
+
+Open http://localhost:8000 in your browser. Stop the server with `Ctrl+C`.
+
+### 2. Reproduce the R analysis
+
+Install R and the required packages:
 
 ```r
 install.packages(c(
@@ -51,25 +63,35 @@ install.packages(c(
 ))
 ```
 
-The data are not included in this repository. Download the World Happiness Report data from https://data.worldhappiness.report and save it as a CSV file with a semicolon (`;`) separator and a decimal comma (`,`). The script reads the columns in this order:
+The raw dataset is not bundled in this repository. Download the 2025 World Happiness Report data from https://data.worldhappiness.report and save it as a CSV using a semicolon (`;`) delimiter and comma (`,`) decimal separator with columns in this order:
 
 | Column | Content |
-|--------|---------|
+|---|---|
 | 1 | Year |
 | 2 | Rank |
 | 3 | Country name |
 | 4 to 9 | Log GDP, Social support, Healthy life expectancy, Freedom, Generosity, Perceptions of corruption |
 
-Then open the script in RStudio and run it. A `file.choose()` dialog will ask for the CSV file. The seed is set to 42 so the K-Means results are reproducible.
+Open [`PCA & CLUSTER.R`](PCA%20&%20CLUSTER.R) in RStudio and run it. A `file.choose()` dialog will prompt for the CSV file. With `seed = 42`, K-Means reproduces the 67/78 country split.
+
+## Repository structure
+
+| Path | Contents |
+|---|---|
+| [`index.html`](index.html) | Browser slide viewer |
+| `slides/` | 25 WebP presentation slides |
+| [`Slide.pdf`](Slide.pdf) | Full presentation deck (PDF, Indonesian) |
+| [`Paper.pdf`](Paper.pdf) | Written report (PDF, Indonesian) |
+| [`PCA & CLUSTER.R`](PCA%20&%20CLUSTER.R) | End-to-end R script |
 
 ## Data source
 
-Helliwell, J., Layard, R., Sachs, J., De Neve, J.-E., Aknin, L., & Wang, S. (2026). World Happiness Report. University of Oxford: Wellbeing Research Centre.
+Helliwell, J., Layard, R., Sachs, J., De Neve, J.-E., Aknin, L., & Wang, S. (2026). *World Happiness Report*. University of Oxford: Wellbeing Research Centre.
 
-The data belong to the publisher. Check the terms of use on the World Happiness Report website before redistributing the data file.
+The raw data belong to the publisher; check the World Happiness Report terms of use before redistributing the data file.
 
 ## Limitations
 
-- The data cover a single point in time, so changes over the years are not analyzed.
-- Only PCA and K-Means are used. Other methods such as hierarchical clustering or DBSCAN are not compared.
-- A silhouette width of 0.386 is moderate, so the boundaries between clusters are not sharp.
+- Cross-sectional 2025 snapshot only, so year-to-year changes are not analysed.
+- Compares PCA + K-Means only; alternative clustering methods such as hierarchical clustering or DBSCAN are not tested.
+- An average silhouette width of 0.386 indicates moderate separation, so boundaries between the two clusters are not sharp.
